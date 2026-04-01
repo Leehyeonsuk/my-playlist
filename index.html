@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>최애 앨범 소개</title>
+    
+    <style>
+        /* 기본 초기화 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 0. 배경색 (html을 화면 전체 배경으로 사용) */
+        html {
+            background: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
+        url("./배경1.jpg") no-repeat center center / cover; /* 깔끔한 회색 그라데이션 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+        }
+
+        /* body를 이미지 속 '둥근 카드'처럼 활용 (HTML 뼈대 유지의 핵심!) */
+        body {
+            background: rgba(255, 255, 255, 0.3); /* 반투명한 유리 느낌 */
+            backdrop-filter: blur(15px);
+            width: 100%;
+            max-width: 420px;
+            border-radius: 25px; /* 이미지처럼 모서리를 둥글게 */
+            padding: 40px 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+            border: 1px solid rgba(255, 255, 255, 0.5); /* 은은한 테두리 */
+            color: #808000; /* 요청하신 올리브 텍스트 색상 */
+        }
+
+        /* 별 특수문자 추가 (HTML 수정 없이 CSS로만 맨 위에 추가) */
+        #album-header::before {
+            content: "✰"; /* 별 글자 */
+            display: block;
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #808000;
+        }
+
+        /* 1. 타이포그래피 */
+        #album-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .artist-name {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        h1 {
+            font-size: 26px;
+            margin-bottom: 5px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        h2 {
+            font-size: 16px;
+            margin: 25px 0 15px;
+            font-weight: bold;
+        }
+
+        /* 2. 가사 영역 (반투명한 박스) */
+        .lyrics-box {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            font-size: 14px;
+        }
+
+        .lyrics-box p {
+            margin-bottom: 8px;
+        }
+
+        .highlight {
+            /* 이미지 속 하얀 알약 모양 배경 */
+            background-color: #ffffff; 
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: bold;
+            margin: 5px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        /* 3. 목록 (체크 모양 추가) */
+        #charm-list {
+            list-style: none;
+        }
+
+        #charm-list li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* 가짜 요소로 체크 아이콘 만들기 */
+        #charm-list li::before {
+            content: "✔";
+            position: absolute;
+            left: 0;
+            background: #ffffff;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 10px;
+            top: 2px;
+        }
+
+        /* 4. 표 (가로줄만 있는 깔끔한 스타일) */
+        #track-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        #track-table th, #track-table td {
+            padding: 12px 5px;
+            border-bottom: 1px solid rgba(128, 128, 0, 0.2); /* 올리브색 반투명 선 */
+        }
+
+        #track-table th {
+            font-weight: normal;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* 표의 마지막 열(Time)은 우측 정렬 */
+        #track-table th:last-child, 
+        #track-table td:last-child {
+            text-align: right;
+        }
+
+        /* 5. 하단 버튼 (하얀색 둥근 버튼) */
+        #album-footer {
+            margin-top: 35px;
+        }
+
+        .listen-btn {
+            background-color: #ffffff;
+            color: #808000;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: 0.2s;
+            display: block;
+            text-align: center;
+            text-decoration: none;
+
+        }
+
+        .listen-btn::before {
+            content: "▶ ";
+        }
+
+        .listen-btn:hover {
+            transform: scale(0.98);
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <header id="album-header">
+        <p class="artist-name">잠들지 못하는</p>
+        <h1>'꿈과 청춘'</h1>
+        <p class="subtitle">다채로운 매력으로 가득 찬 플레이리스트</p>
+    </header>
+
+    <section class="lyrics-section">
+        <h2>🎵 킬링 파트 가사</h2>
+        <div class="lyrics-box">
+            <p class="highlight">그래 그리 쉽지는 않겠지</p>
+            <p>나를 허락해 줄 세상이란</p>
+            <P>손쉽게 다가오는</P>
+            <p>편하고도 감미로운 공간이 아냐</p>
+        </div>
+    </section>
+
+    <section class="info-section">
+        <h2>POINT</h2>
+        <ul id="charm-list">
+            <li>밝고 활기찬 비트와 멜로디</li>
+            <li>청춘만이 느낄수있는 감정의 가사</li>
+            <li>앞으로의 미래를 향한 희망찬 노래</li>
+        </ul>
+    </section>
+
+    <section class="track-section">
+        <h2>🎧 추천 플레이리스트</h2>
+        <table id="track-table">
+            <thead>
+                <tr>
+                    <th>Track</th>
+                    <th>곡명</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>01</td>
+                    <td>전영호 - Butterfly </td>
+                    <td>4:36</td>
+                </tr>
+                <tr>
+                    <td>02</td>
+                    <td>40 - 듣는편지</td>
+                    <td>3:25</td>
+                </tr>
+                <tr>
+                    <td>03</td>
+                    <td>Green Day - Wake Me Up When September Ends</td>
+                    <td>4:45</td>
+                </tr>
+                <tr>
+                    <td>04</td>
+                    <td>Hump Back - 拝啓、少年よ</td>
+                    <td>3:08</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <footer id="album-footer">
+        <a class="listen-btn" href="https://www.youtube.com/watch?v=5BONQ39cP9k&list=PL-OIHWfNiQp5uiJE4M6pUMRCrASzaZm4O&index=1" target="_blank">
+        전곡 들으러 가기
+        </a>
+
+    </footer>
+</body>
+</html>
